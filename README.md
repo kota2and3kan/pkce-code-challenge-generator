@@ -27,4 +27,4 @@ Code Challenge : E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
 - [Keycloak](https://github.com/keycloak/keycloak) PKCE Implementation:
   - [PkceUtils](https://github.com/keycloak/keycloak/blob/26.4.7/services/src/main/java/org/keycloak/protocol/oidc/utils/PkceUtils.java) 
   - [HashUtils](https://github.com/keycloak/keycloak/blob/26.4.7/core/src/main/java/org/keycloak/jose/jws/crypto/HashUtils.java)
-  - [Base64Url](https://github.com/keycloak/keycloak/blob/main/common/src/main/java/org/keycloak/common/util/Base64Url.java)
+  - [Base64Url](https://github.com/keycloak/keycloak/blob/26.4.7/common/src/main/java/org/keycloak/common/util/Base64Url.java)
