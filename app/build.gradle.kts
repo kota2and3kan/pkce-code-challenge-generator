@@ -48,7 +48,7 @@ graalvmNative {
                 buildArgs.add("--static")
                 buildArgs.add("--libc=musl")
             } else if (os.isMacOsX) {
-                // Do not use static linking on macOS
+                // Do not use static linking on macOS.
             } else if (os.isWindows) {
                 // This project does not support building native images on Windows at this time.
             }
