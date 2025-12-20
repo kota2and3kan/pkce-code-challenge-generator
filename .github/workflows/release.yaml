@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create GitHub Release
-        run: gh release create ${{ github.ref }} --latest --generate-notes --verify-tag
+        run: gh release create ${{ github.ref_name }} --latest --generate-notes --verify-tag
 
   buildAndUploadAssets:
     needs: createRelease
@@ -60,4 +60,4 @@ jobs:
         run: tar czf ${{ matrix.asset_name }} -C ./app/build/native/nativeCompile/ pkce-code-challenge-generator
 
       - name: Upload Asset to Release
-        run: gh release upload ${{ github.ref }} ${{ matrix.asset_name }}#${{ matrix.display_label }} --clobber
+        run: gh release upload ${{ github.ref_name }} ${{ matrix.asset_name }}#${{ matrix.display_label }} --clobber
