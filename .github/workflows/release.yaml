@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  createRelease:
+    name: Create Release
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        id: create_release
+        run: gh release create ${{ github.ref }} --latest --generate-notes --verify-tag
+
+  buildAndUploadAssets:
+    needs: createRelease
+    name: Build and upload asset for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            display_label: linux-amd64
+            asset_name: pkce-code-challenge-generator-linux-amd64.tar.gz
+          - os: macos-latest
+            display_label: macos-arm64
+            asset_name: pkce-code-challenge-generator-macos-arm64.tar.gz
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: "21"
+          distribution: "graalvm-community"
+          native-image-musl: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compile Native Image with GraalVM
+        run: ./gradlew nativeCompile
+
+      - name: Run Built Native Image
+        run: ./app/build/native/nativeCompile/pkce-code-challenge-generator dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+
+      - name: Create tar.gz artifact
+        run: tar czf ${{ matrix.asset_name }} -C ./app/build/native/nativeCompile/ pkce-code-challenge-generator
+
+      - name: Upload Asset to Release
+        run: gh release upload ${{ github.ref }} ${{ matrix.asset_name }}#${{ matrix.display_label }} --clobber
