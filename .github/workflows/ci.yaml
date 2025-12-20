@@ -4,9 +4,31 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - '**.java'
+      - '**.gradle'
+      - '**.kts'
+      - 'gradle/**'
+      - '.github/workflows/**'
+      - 'settings.gradle.kts'
+      - '!**.md'
+      - '!LICENSE'
+      - '!.gitignore'
+      - '!.gitattributes'
   push:
     branches:
       - main
+    paths:
+      - '**.java'
+      - '**.gradle'
+      - '**.kts'
+      - 'gradle/**'
+      - '.github/workflows/**'
+      - 'settings.gradle.kts'
+      - '!**.md'
+      - '!LICENSE'
+      - '!.gitignore'
+      - '!.gitattributes'
   workflow_dispatch:
 
 jobs:
