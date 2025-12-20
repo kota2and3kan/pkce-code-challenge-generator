@@ -1,6 +1,7 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+    id("org.graalvm.buildtools.native") version "0.11.3"
 }
 
 repositories {
@@ -32,4 +33,15 @@ application {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+graalvmNative {
+    binaries {
+        named("main")  {
+            imageName.set("pkce-code-challenge-generator")
+            mainClass.set("org.example.Main")
+            buildArgs.add("--static")
+            buildArgs.add("--libc=musl")
+        }
+    }
 }
