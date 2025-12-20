@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  gradle-test:
+  gradlewTest:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,3 +24,27 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       - name: Test with Gradle
         run: ./gradlew test
+
+  gradlewNativeCompile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: "21"
+          distribution: "graalvm-community"
+          native-image-musl: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Compile Native Image with GraalVM
+        run: ./gradlew nativeCompile
+      - name: Run Built Native Image
+        run: ./app/build/native/nativeCompile/pkce-code-challenge-generator dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
