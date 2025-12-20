@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
@@ -40,8 +42,16 @@ graalvmNative {
         named("main")  {
             imageName.set("pkce-code-challenge-generator")
             mainClass.set("org.example.Main")
-            buildArgs.add("--static")
-            buildArgs.add("--libc=musl")
+
+            val os = OperatingSystem.current()
+            if (os.isLinux) {
+                buildArgs.add("--static")
+                buildArgs.add("--libc=musl")
+            } else if (os.isMacOsX) {
+                // Do not use static linking on macOS
+            } else if (os.isWindows) {
+                // This project does not support building native images on Windows at this time.
+            }
         }
     }
 }
